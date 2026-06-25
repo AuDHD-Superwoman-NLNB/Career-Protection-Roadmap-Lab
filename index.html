@@ -1,1 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Career Protection Roadmap Lab</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #faf8f4; color: #1a1a1a; }
+:root { --g: #1a5633; --gl: #e8f2ec; --r: #8b1a1a; --rl: #f5e8e8; --border: #ddd; --bg2: #f0ede8; }
+.wrap { max-width: 660px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+.hdr { text-align: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border); }
+.hdr-sub { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #666; margin-bottom: .4rem; }
+.hdr-title { font-size: 22px; font-weight: 500; color: var(--g); margin-bottom: .3rem; }
+.hdr-tag { font-size: 13px; color: #666; font-style: italic; }
+.prog { display: flex; align-items: center; gap: 5px; margin-bottom: 2rem; flex-wrap: wrap; }
+.ps { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
+.ps.done { background: var(--g); color: #fff; }
+.ps.active { background: var(--r); color: #fff; }
+.ps.up { background: var(--bg2); color: #666; border: 0.5px solid var(--border); }
+.pl { flex: 1; height: 0.5px; background: var(--border); min-width: 8px; }
+.card { background: #fff; border: 0.5px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #666; margin-bottom: .35rem; }
+.sh { font-size: 18px; font-weight: 500; color: var(--g); margin-bottom: .4rem; }
+.sd { font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 1.2rem; }
+.fl { font-size: 13px; font-weight: 500; color: #1a1a1a; margin-bottom: 5px; display: block; }
+.fh { font-size: 12px; color: #888; margin-bottom: 5px; }
+.fg { margin-bottom: 1rem; }
+input[type=text], select { width: 100%; padding: 9px 11px; font-size: 14px; font-family: inherit; border: 0.5px solid #ccc; border-radius: 8px; background: #fff; color: #1a1a1a; }
+input[type=text]:focus, select:focus { outline: none; border-color: var(--g); box-shadow: 0 0 0 2px rgba(26,86,51,.12); }
+.subgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.exp-block { border: 0.5px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+.exp-block input, .exp-block select { margin-bottom: 8px; }
+.ai-box { background: var(--gl); border-left: 3px solid var(--g); border-radius: 0 8px 8px 0; padding: 1rem 1.25rem; margin: 1rem 0; font-size: 14px; line-height: 1.7; color: #1a1a1a; }
+.ai-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--g); font-weight: 500; margin-bottom: .5rem; }
+.dots { display: inline-flex; gap: 3px; }
+.dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--g); animation: b 1.2s infinite; }
+.dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+@keyframes b{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.loading-line { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #666; }
+.btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; gap: 10px; }
+.btn { padding: 9px 18px; font-size: 14px; font-weight: 500; border-radius: 8px; cursor: pointer; border: 0.5px solid #ccc; background: #fff; color: #1a1a1a; font-family: inherit; transition: background .15s; }
+.btn:hover { background: var(--bg2); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-p { background: var(--g); color: #fff; border-color: var(--g); }
+.btn-p:hover:not(:disabled) { background: #145228; }
+.btn-sm { padding: 7px 13px; font-size: 13px; }
+.saved { font-size: 12px; color: #888; display: flex; align-items: center; gap: 5px; }
+.sdot { width: 6px; height: 6px; border-radius: 50%; background: #2e7d32; flex-shrink: 0; }
+.pause { background: var(--rl); border-radius: 8px; padding: .7rem 1rem; font-size: 13px; color: var(--r); margin: .75rem 0; line-height: 1.55; }
+.ro { border: 0.5px solid var(--border); border-radius: 8px; padding: 13px; cursor: pointer; margin-bottom: 9px; transition: all .15s; }
+.ro:hover { border-color: var(--g); background: var(--gl); }
+.ro.sel { border-color: var(--g); background: var(--gl); }
+.ro-hdr { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
+.ro-hdr input { accent-color: var(--g); flex-shrink: 0; }
+.ro-name { font-size: 15px; font-weight: 500; color: var(--g); }
+.ro-desc { font-size: 13px; color: #666; line-height: 1.5; padding-left: 24px; }
+.radio-card { border: 0.5px solid var(--border); border-radius: 8px; padding: 12px; cursor: pointer; transition: all .15s; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 9px; }
+.radio-card:hover { border-color: var(--g); background: var(--gl); }
+.radio-card.sel { border-color: var(--g); background: var(--gl); }
+.radio-card input { accent-color: var(--g); margin-top: 3px; flex-shrink: 0; }
+.radio-card-body strong { font-weight: 500; color: var(--g); display: block; margin-bottom: 3px; font-size: 14px; }
+.radio-card-body span { font-size: 13px; color: #666; line-height: 1.5; }
+hr { border: none; border-top: 0.5px solid var(--border); margin: 1.2rem 0; }
+.rdmap { border: 0.5px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 1rem; font-size: 14px; line-height: 1.75; color: #1a1a1a; }
+.rdmap h3 { font-size: 15px; font-weight: 500; color: var(--r); margin: 1rem 0 .4rem; }
+.rdmap h3:first-child { margin-top: 0; }
+.rdmap p { margin-bottom: .75rem; }
+.rdmap ul { padding-left: 1.25rem; margin-bottom: .75rem; }
+.rdmap li { margin-bottom: 4px; }
+.opt-lbl { font-size: 12px; font-weight: 400; color: #888; margin-left: 4px; }
+.section-title { font-size: 15px; font-weight: 500; color: var(--g); margin-bottom: .4rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div class="hdr-sub">AuDHD Superwoman · New Life New Beginnings</div>
+    <div class="hdr-title">Career Protection Roadmap Lab</div>
+    <div class="hdr-tag">"You are not auditioning for your worth."</div>
+  </div>
+  <div class="prog" id="prog"></div>
+  <div id="main"></div>
+</div>
 
+<script>
+const LABELS = ['Your details','Qualifications','Experience','Role match','Your roadmap'];
+
+let S = (() => {
+  try { const v = localStorage.getItem('cpl-v1'); if(v) return JSON.parse(v); } catch(e){}
+  return {
+    step:1, name:'', location:'', pos:'',
+    ints:['','',''],
+    quals:Array(4).fill(null).map(()=>({n:'',inst:'',cty:'',st:'completed',ms:'',me:''})),
+    exps:Array(5).fill(null).map(()=>({t:'',pl:'',ms:'',st:'completed',me:''})),
+    ai1:'',ai2:'',ai3:'',
+    roles:[],role:'',
+    rmStyle:'',rm:''
+  };
+})();
+
+function save(){ try{ localStorage.setItem('cpl-v1',JSON.stringify(S)); }catch(e){} }
+function go(n){ S.step=n; save(); draw(); window.scrollTo(0,0); }
+
+function draw(){
+  const p=document.getElementById('prog'); p.innerHTML='';
+  for(let i=1;i<=5;i++){
+    const d=document.createElement('div');
+    d.className='ps '+(i<S.step?'done':i===S.step?'active':'up');
+    d.textContent=i; d.title=LABELS[i-1]; p.appendChild(d);
+    if(i<5){const l=document.createElement('div');l.className='pl';p.appendChild(l);}
+  }
+  const fns=[null,s1,s2,s3,s4,s5];
+  document.getElementById('main').innerHTML=fns[S.step]();
+  const bs=[null,b1,b2,b3,b4,b5];
+  bs[S.step]();
+}
+
+function e(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+async function callAI(prompt){
+  const r=await fetch('/api/chat',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  const d=await r.json();
+  if(d.error) throw new Error(d.error.message||'API error');
+  return d.content?.[0]?.text||'';
+}
+
+function s1(){
+  return `<div class="card">
+    <div class="eyebrow">Step 1 of 5</div>
+    <div class="sh">About you &amp; your interests</div>
+    <div class="sd">Let's start with who you are. Everything stays on your device — nothing is stored anywhere else.</div>
+    <div class="fg"><label class="fl">Your name</label><input type="text" id="f0" value="${e(S.name)}" placeholder="First name or preferred name" /></div>
+    <div class="fg"><label class="fl">Where you're based</label><span class="fh">Town / state / country</span><input type="text" id="f1" value="${e(S.location)}" placeholder="e.g. Melbourne, Victoria, Australia" /></div>
+    <div class="fg"><label class="fl">Your current situation</label>
+    <select id="f2">
+      <option value="" ${!S.pos?'selected':''}>Select one...</option>
+      ${['Unpaid carer at home','Currently employed (part time)','Currently employed (full time)','Currently unemployed','Self-employed / freelance','Student','Returning to work'].map(o=>`<option value="${o}" ${S.pos===o?'selected':''}>${o}</option>`).join('')}
+    </select></div>
+    <hr/>
+    <div class="section-title">Your interests &amp; hobbies</div>
+    <div class="sd" style="margin-top:.4rem">What do you feel most alive doing? Anything counts — there are no wrong answers here.</div>
+    ${[0,1,2].map(i=>`<div class="fg"><label class="fl">Interest ${i+1}${i>0?' <span class="opt-lbl">(optional)</span>':''}</label><input type="text" id="fi${i}" value="${e(S.ints[i])}" placeholder="${['e.g. Creative writing','e.g. Researching psychology','e.g. Community work'][i]}" /></div>`).join('')}
+    <div class="pause"><strong>You can pause here anytime.</strong> Your work saves automatically as you type.</div>
+    ${S.ai1?`<div class="ai-box"><div class="ai-lbl">Your reflection — from the lab</div>${S.ai1}</div>`:''}
+    <div class="btn-row"><div class="saved"><div class="sdot"></div>Auto-saved</div>
+    <button class="btn btn-p" id="bn1" ${canGo1()?'':'disabled'}>${S.ai1?'Continue to step 2 →':'Reflect on my interests →'}</button></div>
+  </div>`;
+}
+function canGo1(){ return S.name.trim()&&S.location.trim()&&S.pos&&S.ints[0].trim(); }
+function b1(){
+  document.getElementById('f0').oninput=ev=>{S.name=ev.target.value;save();const b=document.getElementById('bn1');if(b)b.disabled=!canGo1();};
+  document.getElementById('f1').oninput=ev=>{S.location=ev.target.value;save();const b=document.getElementById('bn1');if(b)b.disabled=!canGo1();};
+  document.getElementById('f2').onchange=ev=>{S.pos=ev.target.value;save();const b=document.getElementById('bn1');if(b)b.disabled=!canGo1();};
+  [0,1,2].forEach(i=>{ document.getElementById('fi'+i).oninput=ev=>{S.ints[i]=ev.target.value;save();const b=document.getElementById('bn1');if(b)b.disabled=!canGo1();}; });
+  document.getElementById('bn1').onclick=async()=>{
+    if(S.ai1){go(2);return;}
+    const btn=document.getElementById('bn1');
+    btn.disabled=true;btn.textContent='Thinking...';
+    const box=document.createElement('div');box.className='ai-box';
+    box.innerHTML=`<div class="ai-lbl">Your reflection — from the lab</div><div class="loading-line"><div class="dots"><span></span><span></span><span></span></div>&nbsp;Reading your interests...</div>`;
+    btn.closest('.card').insertBefore(box,btn.parentElement);
+    try{
+      const ints=S.ints.filter(i=>i.trim());
+      const txt=await callAI(`You are a warm, specific, anti-gaslighting career coach for AuDHD women. The user is ${S.name}, based in ${S.location}, currently: ${S.pos}. Their interests: ${ints.join(', ')}. In 120-150 words, reflect back with warmth. Identify the underlying themes, strengths, values and work styles this person would thrive in. Be specific — not generic. Speak directly to them. No bullet points, no corporate jargon. Warm flowing prose only.`);
+      S.ai1=txt;save();
+      box.innerHTML=`<div class="ai-lbl">Your reflection — from the lab</div>${txt}`;
+      btn.textContent='Continue to step 2 →';btn.disabled=false;btn.onclick=()=>go(2);
+    }catch(err){
+      box.innerHTML=`<div class="ai-lbl">From the lab</div><span style="color:var(--r)">Something went wrong — please try again.</span>`;
+      btn.textContent='Reflect on my interests →';btn.disabled=false;
+    }
+  };
+}
+
+function s2(){
+  return `<div class="card">
+    <div class="eyebrow">Step 2 of 5</div>
+    <div class="sh">Your qualifications &amp; certifications</div>
+    <div class="sd">Formal degrees, vocational certs, short courses, self-taught skills, lived learning — all of it counts here.</div>
+    ${S.quals.map((q,i)=>`<div class="exp-block">
+      <label class="fl">Qualification ${i+1}${i>1?' <span class="opt-lbl">(optional)</span>':''}</label>
+      <input type="text" id="qn${i}" value="${e(q.n)}" placeholder="Qualification or certification name" />
+      <div class="subgrid"><input type="text" id="qi${i}" value="${e(q.inst)}" placeholder="Institution / provider" /><input type="text" id="qc${i}" value="${e(q.cty)}" placeholder="Country" /></div>
+      <div class="subgrid">
+        <input type="text" id="qs${i}" value="${e(q.ms)}" placeholder="Month &amp; year started" />
+        <div><select id="qst${i}" style="margin-bottom:6px"><option value="completed" ${q.st==='completed'?'selected':''}>Completed</option><option value="studying" ${q.st==='studying'?'selected':''}>Currently studying</option></select>
+        <input type="text" id="qe${i}" value="${e(q.me)}" placeholder="Month &amp; year completed" ${q.st==='studying'?'style="display:none"':''}/></div>
+      </div>
+    </div>`).join('')}
+    ${S.ai2?`<div class="ai-box"><div class="ai-lbl">What your qualifications say about you</div>${S.ai2}</div>`:''}
+    <div class="pause"><strong>Permission to pause.</strong> You don't need to fill in all four today. Come back anytime — everything saves.</div>
+    <div class="btn-row">
+      <button class="btn btn-sm" onclick="go(1)">← Back</button>
+      <div style="display:flex;gap:8px;align-items:center"><div class="saved"><div class="sdot"></div>Auto-saved</div>
+      <button class="btn btn-p" id="bn2">${S.ai2?'Continue to step 3 →':'Reflect on my qualifications →'}</button></div>
+    </div>
+  </div>`;
+}
+function b2(){
+  S.quals.forEach((_,i)=>{
+    [['qn','n'],['qi','inst'],['qc','cty'],['qs','ms'],['qe','me']].forEach(([pfx,key])=>{
+      const el=document.getElementById(pfx+i);
+      if(el) el.oninput=ev=>{S.quals[i][key]=ev.target.value;save();};
+    });
+    const stEl=document.getElementById('qst'+i),enEl=document.getElementById('qe'+i);
+    if(stEl&&enEl) stEl.onchange=ev=>{S.quals[i].st=ev.target.value;enEl.style.display=ev.target.value==='studying'?'none':'';save();};
+  });
+  document.getElementById('bn2').onclick=async()=>{
+    if(S.ai2){go(3);return;}
+    const btn=document.getElementById('bn2');btn.disabled=true;btn.textContent='Thinking...';
+    const list=S.quals.filter(q=>q.n.trim()).map(q=>`${q.n}${q.inst?' ('+q.inst+')':''}`);
+    if(!list.length){S.ai2='';save();go(3);return;}
+    const box=document.createElement('div');box.className='ai-box';
+    box.innerHTML=`<div class="ai-lbl">What your qualifications say about you</div><div class="loading-line"><div class="dots"><span></span><span></span><span></span></div></div>`;
+    btn.closest('.card').insertBefore(box,btn.parentElement);
+    try{
+      const txt=await callAI(`You are a warm, specific, anti-gaslighting career coach for AuDHD women. The user is ${S.name}. Their qualifications: ${list.join('; ')}. In 120-150 words, acknowledge the value of each, then identify what these signal collectively to employers — credentials, credibility, doors they open. Speak directly to ${S.name}. No bullet points. Warm prose only. No corporate jargon.`);
+      S.ai2=txt;save();
+      box.innerHTML=`<div class="ai-lbl">What your qualifications say about you</div>${txt}`;
+      btn.textContent='Continue to step 3 →';btn.disabled=false;btn.onclick=()=>go(3);
+    }catch(err){
+      box.innerHTML=`<div class="ai-lbl">From the lab</div><span style="color:var(--r)">Something went wrong — please try again.</span>`;
+      btn.textContent='Reflect on my qualifications →';btn.disabled=false;
+    }
+  };
+}
+
+function s3(){
+  return `<div class="card">
+    <div class="eyebrow">Step 3 of 5</div>
+    <div class="sh">Your relevant experience</div>
+    <div class="sd">Paid work, volunteer roles, freelance, caregiving, community leadership, lived experience — all valid. You don't need a job title to have professional experience.</div>
+    ${S.exps.map((x,i)=>`<div class="exp-block">
+      <label class="fl">Experience ${i+1}${i>2?' <span class="opt-lbl">(optional)</span>':''}</label>
+      <input type="text" id="et${i}" value="${e(x.t)}" placeholder="Role, experience, or what you did" />
+      <input type="text" id="ep${i}" value="${e(x.pl)}" placeholder="Where / with whom (org, home, community...)" />
+      <div class="subgrid">
+        <input type="text" id="es${i}" value="${e(x.ms)}" placeholder="Month &amp; year started" />
+        <div><select id="est${i}" style="margin-bottom:6px"><option value="completed" ${x.st==='completed'?'selected':''}>Completed</option><option value="current" ${x.st==='current'?'selected':''}>Currently in role</option></select>
+        <input type="text" id="ee${i}" value="${e(x.me)}" placeholder="Month &amp; year ended" ${x.st==='current'?'style="display:none"':''}/></div>
+      </div>
+    </div>`).join('')}
+    ${S.ai3?`<div class="ai-box"><div class="ai-lbl">The professional value in your experience</div>${S.ai3}</div>`:''}
+    <div class="pause"><strong>Permission to pause.</strong> Three experiences is enough to continue. Add more anytime.</div>
+    <div class="btn-row">
+      <button class="btn btn-sm" onclick="go(2)">← Back</button>
+      <div style="display:flex;gap:8px;align-items:center"><div class="saved"><div class="sdot"></div>Auto-saved</div>
+      <button class="btn btn-p" id="bn3">${S.ai3?'Continue to step 4 →':'Reflect on my experience →'}</button></div>
+    </div>
+  </div>`;
+}
+function b3(){
+  S.exps.forEach((_,i)=>{
+    [['et','t'],['ep','pl'],['es','ms'],['ee','me']].forEach(([pfx,key])=>{
+      const el=document.getElementById(pfx+i);
+      if(el) el.oninput=ev=>{S.exps[i][key]=ev.target.value;save();};
+    });
+    const stEl=document.getElementById('est'+i),enEl=document.getElementById('ee'+i);
+    if(stEl&&enEl) stEl.onchange=ev=>{S.exps[i].st=ev.target.value;enEl.style.display=ev.target.value==='current'?'none':'';save();};
+  });
+  document.getElementById('bn3').onclick=async()=>{
+    if(S.ai3){go(4);return;}
+    const btn=document.getElementById('bn3');btn.disabled=true;btn.textContent='Thinking...';
+    const list=S.exps.filter(x=>x.t.trim()).map(x=>`${x.t}${x.pl?' at '+x.pl:''}`);
+    if(!list.length){S.ai3='';save();go(4);return;}
+    const box=document.createElement('div');box.className='ai-box';
+    box.innerHTML=`<div class="ai-lbl">The professional value in your experience</div><div class="loading-line"><div class="dots"><span></span><span></span><span></span></div></div>`;
+    btn.closest('.card').insertBefore(box,btn.parentElement);
+    try{
+      const txt=await callAI(`You are a warm, specific, anti-gaslighting career coach for AuDHD women. The user is ${S.name}. Their experiences: ${list.join('; ')}. In 120-150 words, validate each one as genuinely valuable. Identify transferable skills embedded in each that employers and clients care about. Be specific. Speak directly to ${S.name}. Warm prose only — no bullet points, no corporate jargon.`);
+      S.ai3=txt;save();
+      box.innerHTML=`<div class="ai-lbl">The professional value in your experience</div>${txt}`;
+      btn.textContent='Continue to step 4 →';btn.disabled=false;btn.onclick=()=>go(4);
+    }catch(err){
+      box.innerHTML=`<div class="ai-lbl">From the lab</div><span style="color:var(--r)">Something went wrong — please try again.</span>`;
+      btn.textContent='Reflect on my experience →';btn.disabled=false;
+    }
+  };
+}
+
+function s4(){
+  const hasRoles=S.roles.length>0;
+  return `<div class="card">
+    <div class="eyebrow">Step 4 of 5</div>
+    <div class="sh">Three roles that fit you</div>
+    <div class="sd">Based on everything you've shared, the lab has identified three roles that align with your interests, qualifications, and experience. Select one to build your roadmap around.</div>
+    ${!hasRoles?`<div class="loading-line" style="padding:.75rem 0"><div class="dots"><span></span><span></span><span></span></div>&nbsp;Generating your role matches...</div>`:
+    `<div>${S.roles.map((r,i)=>`<div class="radio-card ${S.role===r.t?'sel':''}" data-i="${i}"><input type="radio" name="role" ${S.role===r.t?'checked':''}/><div class="radio-card-body"><strong>${r.t}</strong><span>${r.d}</span></div></div>`).join('')}</div>`}
+    <div class="btn-row" style="margin-top:1.25rem">
+      <button class="btn btn-sm" onclick="go(3)">← Back</button>
+      <button class="btn btn-p" id="bn4" ${S.role?'':'disabled'}>Build my roadmap →</button>
+    </div>
+  </div>`;
+}
+function b4(){
+  if(!S.roles.length){ genRoles(); return; }
+  document.querySelectorAll('[data-i]').forEach(el=>{
+    el.onclick=()=>{
+      const i=parseInt(el.dataset.i);
+      S.role=S.roles[i].t;save();
+      document.querySelectorAll('[data-i]').forEach(r=>{r.classList.remove('sel');r.querySelector('input').checked=false;});
+      el.classList.add('sel');el.querySelector('input').checked=true;
+      const b=document.getElementById('bn4');if(b)b.disabled=false;
+    };
+  });
+  const b=document.getElementById('bn4');
+  if(b) b.onclick=()=>{if(S.role)go(5);};
+}
+async function genRoles(){
+  const ints=S.ints.filter(i=>i.trim());
+  const quals=S.quals.filter(q=>q.n.trim()).map(q=>q.n);
+  const exps=S.exps.filter(x=>x.t.trim()).map(x=>x.t);
+  try{
+    const txt=await callAI(`You are a warm, specific career coach for AuDHD women. Suggest exactly 3 realistic job roles for ${S.name}. Interests: ${ints.join(', ')||'not specified'}. Qualifications: ${quals.join(', ')||'not specified'}. Experiences: ${exps.join(', ')||'not specified'}. Current situation: ${S.pos}. Location: ${S.location}. For each role: a clear job title and 2 sentences on why it fits and what day-to-day work looks like. Simple language. Reply ONLY with a JSON array of 3 objects with keys "t" (title) and "d" (description). No other text, no markdown fences.`);
+    const clean=txt.replace(/```json|```/g,'').trim();
+    S.roles=JSON.parse(clean);save();draw();
+  }catch(err){
+    S.roles=[
+      {t:'Learning Designer',d:'Your training background and research depth make you a strong fit for creating accessible educational content. Day-to-day you would develop learning materials, guides, and frameworks that help others grow.'},
+      {t:'Content Writer & Educator',d:'Your writing practice and lived expertise give you a credible, authentic voice. You would create articles, guides, and educational resources for neurodivergent and community audiences.'},
+      {t:'Support Coordinator',d:'Your hands-on experience and deep empathy position you to guide others through complex systems. Daily work involves planning, advocating, and coordinating support for people with diverse needs.'}
+    ];
+    save();draw();
+  }
+}
+
+function s5(){
+  const styles=[
+    {id:'constellation',name:'Constellation map',desc:'Energy-aware and non-sequential. Move between actions in any order depending on how you feel that day. No linear pressure.'},
+    {id:'garden',name:'Garden style',desc:'Each goal is a plot you tend at your own pace. Some days you water one thing; some days you plant something new.'},
+    {id:'linear',name:'Gentle linear path',desc:'Clear steps with explicit permission to pause at each one. Good for structured-day states — not the expected default, just an option.'}
+  ];
+  return `<div class="card">
+    <div class="eyebrow">Step 5 of 5 — Stage 1</div>
+    <div class="sh">Your career roadmap</div>
+    <div class="sd">Choose how you'd like your roadmap presented. All three contain the same plan — this is about what format works for your brain right now. The linear option is intentionally last.</div>
+    <div style="margin-bottom:1.2rem">
+      ${styles.map(st=>`<div class="ro ${S.rmStyle===st.id?'sel':''}" data-st="${st.id}">
+        <div class="ro-hdr"><input type="radio" name="rms" ${S.rmStyle===st.id?'checked':''}/><div class="ro-name">${st.name}</div></div>
+        <div class="ro-desc">${st.desc}</div>
+      </div>`).join('')}
+    </div>
+    <div class="pause">Your roadmap stays on your device. Stage 2 adds the reframe table and career protection document.</div>
+    ${S.rm?`<div class="rdmap" id="rdout">${fmtRm(S.rm)}</div>`:''}
+    <div class="btn-row" style="margin-top:1.25rem">
+      <button class="btn btn-sm" onclick="go(4)">← Back</button>
+      <div style="display:flex;gap:8px">
+        ${S.rm?`<button class="btn btn-sm" id="bncopy">Copy roadmap</button>`:''}
+        <button class="btn btn-p" id="bn5" ${S.rmStyle&&!S.rm?'':'disabled'}>${S.rm?'✓ Stage 1 complete':'Generate my roadmap →'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+function fmtRm(t){
+  return '<p>'+t
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^#{1,3}\s+(.+)$/gm,'</p><h3>$1</h3><p>')
+    .replace(/^[•\-]\s+(.+)$/gm,'</p><ul><li>$1</li></ul><p>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/\n/g,' ')+'</p>';
+}
+function b5(){
+  document.querySelectorAll('[data-st]').forEach(el=>{
+    el.onclick=()=>{
+      S.rmStyle=el.dataset.st;save();
+      document.querySelectorAll('[data-st]').forEach(r=>{r.classList.remove('sel');r.querySelector('input').checked=false;});
+      el.classList.add('sel');el.querySelector('input').checked=true;
+      const b=document.getElementById('bn5');if(b&&!S.rm)b.disabled=false;
+    };
+  });
+  const btn=document.getElementById('bn5');
+  if(btn){
+    btn.onclick=async()=>{
+      if(S.rm){alert('Stage 1 complete! Your roadmap is saved. Stage 2 (steps 6–8) coming next.');return;}
+      btn.disabled=true;btn.textContent='Building your roadmap...';
+      const ints=S.ints.filter(i=>i.trim());
+      const quals=S.quals.filter(q=>q.n.trim()).map(q=>q.n);
+      const exps=S.exps.filter(x=>x.t.trim()).map(x=>x.t);
+      const styleNote=S.rmStyle==='linear'?' Format with numbered steps and explicit permission to pause at each step.':S.rmStyle==='garden'?' Use gentle garden metaphors throughout — seeds, tending, growth at your own pace.':' Use flowing non-linear language. Frame actions as nodes they can visit in any order.';
+      try{
+        const txt=await callAI(`You are a warm, specific, anti-gaslighting career coach for AuDHD women. Create a personalised Career Protection Roadmap for ${S.name} targeting the role: ${S.role}. Background — Interests: ${ints.join(', ')||'varied'}. Qualifications: ${quals.join(', ')||'varied'}. Experiences: ${exps.join(', ')||'varied'}. Current situation: ${S.pos}. Location: ${S.location}. Structure: **Your career narrative** (2-3 sentences weaving their background), **Why you are ready** (3 specific points), **Your 30-day action plan** (3 concrete specific actions), **Your closing statement** (2-3 sentences of genuine encouragement). 350-400 words. Specific to this person. No generic advice. No jargon.${styleNote}`);
+        S.rm=txt;save();draw();
+      }catch(err){
+        btn.disabled=false;btn.textContent='Generate my roadmap →';
+      }
+    };
+  }
+  const cp=document.getElementById('bncopy');
+  if(cp) cp.onclick=()=>{
+    navigator.clipboard.writeText(S.rm||'').then(()=>{cp.textContent='Copied!';setTimeout(()=>cp.textContent='Copy roadmap',2000);}).catch(()=>{});
+  };
+}
+
+draw();
+</script>
+</body>
+</html>
